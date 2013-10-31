@@ -129,7 +129,7 @@ public class LocalExamplesProvider extends ApidocProvider {
             return;
         }
 
-        final BooleanQuery query = createQuery();
+        final BooleanQuery query = createVariableUsageQuery();
         final SearchResult searchResult = searcher.lenientSearch(query, maxHits);
         stopMeasurement();
 
@@ -152,7 +152,7 @@ public class LocalExamplesProvider extends ApidocProvider {
             return;
         }
 
-        final BooleanQuery query = createQuery();
+        final BooleanQuery query = createVariableUsageQuery();
         final SearchResult searchResults = searcher.lenientSearch(query, maxHits);
         stopMeasurement();
 
@@ -399,7 +399,7 @@ public class LocalExamplesProvider extends ApidocProvider {
         return query;
     }
 
-    private BooleanQuery createQuery()
+    private BooleanQuery createVariableUsageQuery()
     {
         // TODO: cleanup needed
         searchType = VAR_USAGE_SEARCH;
