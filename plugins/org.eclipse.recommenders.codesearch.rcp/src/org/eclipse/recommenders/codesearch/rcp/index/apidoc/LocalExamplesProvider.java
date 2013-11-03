@@ -39,15 +39,18 @@ import org.eclipse.jdt.core.dom.CastExpression;
 import org.eclipse.jdt.core.dom.ClassInstanceCreation;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.MarkerAnnotation;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
+import org.eclipse.jdt.core.dom.ParameterizedType;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SimpleType;
 import org.eclipse.jdt.core.dom.SingleMemberAnnotation;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.StructuralPropertyDescriptor;
 import org.eclipse.jdt.core.dom.SuperMethodInvocation;
+import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jdt.internal.corext.dom.LinkedNodeFinder;
@@ -64,6 +67,7 @@ import org.eclipse.recommenders.rcp.JavaElementSelectionEvent;
 import org.eclipse.recommenders.rcp.JavaElementSelectionEvent.JavaElementSelectionLocation;
 import org.eclipse.recommenders.utils.Pair;
 import org.eclipse.recommenders.rcp.JavaElementResolver;
+import org.eclipse.recommenders.rcp.utils.ASTNodeUtils;
 import org.eclipse.recommenders.rcp.utils.JdtUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -380,7 +384,7 @@ public class LocalExamplesProvider extends ApidocProvider {
                                     .getTypeIdentifier(simpleNode).get());
                     query.add(new TermQuery(term), Occur.MUST);
                     searchterms.add(simpleNode.getIdentifier());
-                }
+                }break;
             case ASTNode.FIELD_DECLARATION:
                 if (parentNode.getLocationInParent() == TypeDeclaration.BODY_DECLARATIONS_PROPERTY) {
                     searchType = CLASS_FIELD_SEARCH;
@@ -392,7 +396,16 @@ public class LocalExamplesProvider extends ApidocProvider {
                                     .getTypeIdentifier(simpleNode).get());
                     query.add(new TermQuery(term), Occur.MUST);
                     searchterms.add(simpleNode.getIdentifier());
-                }
+                }break;
+            case ASTNode.PARAMETERIZED_TYPE:
+                //
+                ITypeBinding ss = ((ParameterizedType) parentNode).getType().resolveBinding();
+                Optional<String> ssss = BindingHelper.getIdentifier(ss);
+                Term term = prepareSearchTerm(
+                        Fields.FIELD_TYPE, BindingHelper.getTypeIdentifier(simpleNode).get());
+                query.add(new TermQuery(term), Occur.SHOULD);
+                searchterms.add(simpleNode.getIdentifier());
+  
 
         }
         
