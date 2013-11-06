@@ -6,12 +6,14 @@
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  * Contributors:
- *    Tobias Boehm - initial API and implementation.
+ *    Kavith Thiranga Lokuhewage - initial implementation.
  */
-
 package org.eclipse.recommenders.internal.codesearch.rcp;
 
+import static org.eclipse.recommenders.utils.Checks.ensureIsTrue;
+
 import java.io.File;
+import java.io.IOException;
 
 import javax.swing.plaf.basic.BasicOptionPaneUI.ButtonActionListener;
 
@@ -219,6 +221,10 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
         }   
     }
     private static void deleteFolder(File folder) {
+        final File file = new File(folder, "write.lock");
+        if (file.exists()) {
+            ensureIsTrue(file.delete(), "failed to remove old write lock file");
+        }
         File[] files = folder.listFiles();
         if(files!=null) { 
             for(File f: files) {
@@ -230,6 +236,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
             }
         }
         //folder.delete();
+      
     }
     
     

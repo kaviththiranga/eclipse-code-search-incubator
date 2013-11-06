@@ -1,16 +1,13 @@
 /**
- * Copyright (c) 2012 Tobias Boehm.
+ * Copyright (c) 2013 Kavith Thiranga Lokuhewage.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  * Contributors:
- *    Marcel Bruch - initial API and implementation.
- *    Tobias Boehm - implementation.
- *    Kavith Thiranga - Refactorings to support new Recommenders API
+ *    Kavith Thiranga Lokuhewage - initial implementation.
  */
-
 package org.eclipse.recommenders.internal.codesearch.rcp;
 
 import static org.eclipse.recommenders.utils.Checks.cast;
@@ -208,10 +205,11 @@ public class IndexUpdateService {
     }
     
     public void reindexWorkspace(){
-        if (backgroundIndexerActive) {
+        if (!backgroundIndexerActive) {
 
-            new IndexerJob("Code-search: Re-indexing workspace.", workspace.getProjects(), indexer,
+           IndexerJob job= new IndexerJob("Code-search: Re-indexing workspace.", workspace.getProjects(), indexer,
                     (Workspace) workspace.getWorkspace());
+           job.schedule(1000);
         }
     }
 
